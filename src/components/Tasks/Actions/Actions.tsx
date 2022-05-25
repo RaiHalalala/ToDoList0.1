@@ -2,27 +2,27 @@ import React, { FC, useEffect, useState } from 'react';
 import { actions, sorting, Base, Data, ID_MANE_LIST } from 'data/actions';
 import { ChangingColumn, SortOptions } from '../type';
 //Components
-import ButtonIcon from 'ui-kit/ButtonIcon';
-import { Wrapper, List, Name, Item } from './styled';
+import Header from './Header';
+import { Wrapper, List, Item } from './styled';
 
 interface ActionsProps {
-  position: { left: number; right: number };
   sortingState: SortOptions | null;
-  sortColumn: (options: SortOptions) => void;
+  position: { left: number; right: number };
   closePopup: () => void;
-  changeNameColumn: () => void;
   createNewTask: () => void;
+  changeNameColumn: () => void;
+  sortColumn: (options: SortOptions) => void;
   changeColumn: (value: ChangingColumn) => void;
 }
 
 const Actions: FC<ActionsProps> = ({
   position,
-  sortingState,
   sortColumn,
   closePopup,
-  changeNameColumn,
-  createNewTask,
   changeColumn,
+  sortingState,
+  createNewTask,
+  changeNameColumn,
 }: ActionsProps) => {
   const [list, setList] = useState<Data>(actions);
   const [width, setWidth] = useState<number | null>(null);
@@ -39,6 +39,7 @@ const Actions: FC<ActionsProps> = ({
   const clearColumn = () => changeColumn(ChangingColumn.clear);
   const deleteColumn = () => changeColumn(ChangingColumn.delete);
   const startActive = (id: string, e: React.MouseEvent<HTMLElement>) => {
+    //depending on 'id + base' from list.data call a function
     switch (id) {
       case `0-${Base.action}`: {
         return changeNameColumn();
@@ -47,6 +48,7 @@ const Actions: FC<ActionsProps> = ({
         return createNewTask();
       }
       case `2-${Base.action}`: {
+        //open an other list with sorting functions
         return setOtherList(e, sorting);
       }
       case `3-${Base.action}`: {
@@ -86,29 +88,12 @@ const Actions: FC<ActionsProps> = ({
       <List
         position={position}
         isCloseEnding={Boolean(width && width - position.left < 250)}>
-        <Name>
-          {list.id !== ID_MANE_LIST && (
-            <ButtonIcon
-              className="arrow"
-              onClick={(e) => setOtherList(e, actions)}
-              attrIcon={{
-                src: '/static/images/arrow-vertical.svg',
-                alt: 'arrow',
-                width: '6px',
-              }}
-            />
-          )}
-          <p className="title">{list.name}</p>
-          <ButtonIcon
-            className="button"
-            onClick={closePopup}
-            attrIcon={{
-              src: '/static/images/close.png',
-              alt: 'close',
-              width: '10px',
-            }}
-          />
-        </Name>
+        <Header
+          name={list.name}
+          closePopup={closePopup}
+          isMainList={list.id === ID_MANE_LIST}
+          setList={(list: Data) => setList(list)}
+        />
         {list.data.map(({ title, id, base }) => (
           <Item
             key={id}

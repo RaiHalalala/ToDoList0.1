@@ -1,28 +1,6 @@
 import React, { FC, useState } from 'react';
 import { BlockPicker } from 'react-color';
-import styled from '@emotion/styled';
-import { setGradient } from 'utils/helper';
-
-const Wrapper = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  padding-top: 40px;
-`;
-
-type ColorDisplayProps = {
-  colors: string[];
-};
-
-const ColorDisplay = styled.div<ColorDisplayProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background: ${({ colors }) => setGradient(colors)};
-  border-radius: 15px;
-`;
+import { Wrapper, ColorDisplay } from './styled';
 
 interface ColorPicker {
   width?: number;
@@ -40,10 +18,10 @@ type Colors = {
 const ColorPicker: FC<ColorPicker> = ({
   width,
   className,
-  setData,
-  initialColors,
   firstColor,
   secondColor,
+  initialColors,
+  setData,
 }: ColorPicker) => {
   const [colors, setColors] = useState<Colors>({
     first: firstColor,
@@ -57,24 +35,18 @@ const ColorPicker: FC<ColorPicker> = ({
   return (
     <Wrapper>
       <ColorDisplay colors={Object.values(colors)}></ColorDisplay>
-      <BlockPicker
-        color={colors.first}
-        width={`${width || 140}px`}
-        className={className}
-        colors={initialColors}
-        onChange={(color) => {
-          saveDataColors('first', color.hex);
-        }}
-      />
-      <BlockPicker
-        color={colors.second}
-        width={`${width || 140}px`}
-        className={className}
-        colors={initialColors}
-        onChange={(color) => {
-          saveDataColors('second', color.hex);
-        }}
-      />
+      {Object.entries(colors).map(([key, color], index) => (
+        <BlockPicker
+          key={index}
+          color={color}
+          className={className}
+          colors={initialColors}
+          width={`${width || 140}px`}
+          onChange={(color) => {
+            saveDataColors(key, color.hex);
+          }}
+        />
+      ))}
     </Wrapper>
   );
 };

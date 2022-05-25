@@ -49,18 +49,18 @@ const DeadlineProgress: FC<DeadlineProgressProps> = ({
         <DateString>{setFormatDate(new Date(deadline))}</DateString>
       </WrapperDate>
       <Arrow
-        isShow={isHideCalendar}
+        className="arrow"
         position="horizontal"
-        onClick={() => setIsHideCalendar((prev) => !prev)}
-        className="arrow">
+        isShow={isHideCalendar}
+        onClick={() => setIsHideCalendar((prev) => !prev)}>
         {DEADLINE_TITLE}
       </Arrow>
       {!isHideCalendar && (
         <Datepicker
           className="date-picker"
+          changeTimes={changeTimes}
           start={new Date(datecreated)}
           end={new Date(deadline)}
-          changeTimes={changeTimes}
         />
       )}
     </Wrapper>

@@ -7,6 +7,7 @@ import { Task } from 'types/task';
 //Components
 import DeadlineProgress from 'ui-kit/DeadlineProgress';
 import FormDescription from './FormDescription';
+import WrapperModal from 'ui-kit/WrapperModal';
 import Description from './Description';
 import Search from 'ui-kit/Search';
 import Button from 'ui-kit/Button';
@@ -20,17 +21,19 @@ import {
   List,
 } from './styled';
 
-interface OpenedCardProps {
+interface ChangedOldTaskProps {
   task: Task;
   tags: string[];
+  onClose: () => void;
   setTask: (values: Task) => void;
 }
 
-const OpenedCard: FC<OpenedCardProps> = ({
+const ChangedOldTask: FC<ChangedOldTaskProps> = ({
   task,
   tags,
   setTask,
-}: OpenedCardProps) => {
+  onClose,
+}: ChangedOldTaskProps) => {
   const { isMobile } = useScreen();
   const [values, setValues] = useState<Task>(task);
   const onSubmitForm = (value: string) => {
@@ -81,7 +84,7 @@ const OpenedCard: FC<OpenedCardProps> = ({
   );
 
   return (
-    <>
+    <WrapperModal onClose={onClose}>
       <LeftContent>
         <HeaderDescription>{HEADER_TEXTAREA}</HeaderDescription>
         <FormDescription onSubmitForm={onSubmitForm} />
@@ -126,8 +129,8 @@ const OpenedCard: FC<OpenedCardProps> = ({
           {isMobile && ButtonSave}
         </Info>
       </RightContent>
-    </>
+    </WrapperModal>
   );
 };
 
-export default OpenedCard;
+export default ChangedOldTask;

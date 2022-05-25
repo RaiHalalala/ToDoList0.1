@@ -32,6 +32,17 @@
       "description": "play the game & create something",
       "datecreated": "25.05.2022",
       "is_favorite": false
+    },
+    {
+      "id": 4,
+      "name": "Hello",
+      "colors": [
+        "#F47373",
+        "#ba68c8"
+      ],
+      "description": "hello",
+      "datecreated": "May 25, 2022",
+      "is_favorite": false
     }
   ],
   "tasks": [
@@ -281,6 +292,12 @@
         }
       ],
       "data": []
+    },
+    {
+      "boardId": 4,
+      "categories": [],
+      "data": [],
+      "id": 324
     }
   ]
 }

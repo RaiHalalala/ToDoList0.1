@@ -1,17 +1,19 @@
 import React, { forwardRef, useState } from 'react';
 import {
-  DraggableProvidedDragHandleProps,
+  DraggableProvidedDragHandleProps as DragHandleType,
   Droppable,
 } from 'react-beautiful-dnd';
-import { ChangingColumn, DropName, SortOptions, Value } from '../type';
-import { useScreen } from 'hooks/useScreen';
 import { Task } from 'types/task';
+import { useScreen } from 'hooks/useScreen';
+import { IMAGE_NEW_TASK } from 'constants/common';
+import { ChangingColumn, DropName, SortOptions, Value } from '../type';
 //Components
-import Arrow from 'ui-kit/Arrow';
-import Actions from '../Actions';
-import Header from './Header';
 import Card from '../Card';
-import { ColumnWrapper, Content, NewTask, Points } from './styled';
+import Header from './Header';
+import Actions from '../Actions';
+import Arrow from 'ui-kit/Arrow';
+import ButtonSetting from './ButtonSetting';
+import { ColumnWrapper, Content, NewTask } from './styled';
 
 type InitialPosition = {
   left: number;
@@ -21,15 +23,15 @@ type InitialPosition = {
 interface ColumnProps {
   id: string;
   value: Value;
-  sorting: SortOptions | null;
   isNewColumn: boolean;
-  sortColumn: (options: SortOptions) => void;
-  setMadeOfColumn: () => void;
-  saveMadeOfColumn: (name: string) => void;
+  sorting: SortOptions | null;
+  dragHandleProps?: DragHandleType;
   createNewTask: () => void;
-  openTask: (task: Task) => void;
+  setMadeOfColumn: () => void;
+  changeOldTask: (task: Task) => void;
+  saveMadeOfColumn: (name: string) => void;
+  sortColumn: (options: SortOptions) => void;
   changeColumn: (value: ChangingColumn) => void;
-  dragHandleProps?: DraggableProvidedDragHandleProps;
 }
 
 const Column = forwardRef<HTMLDivElement, ColumnProps>(
@@ -38,14 +40,14 @@ const Column = forwardRef<HTMLDivElement, ColumnProps>(
       id,
       value,
       sorting,
-      isNewColumn,
-      openTask,
       sortColumn,
-      createNewTask,
+      isNewColumn,
       changeColumn,
+      changeOldTask,
+      createNewTask,
       setMadeOfColumn,
-      saveMadeOfColumn,
       dragHandleProps,
+      saveMadeOfColumn,
       ...params
     }: ColumnProps,
     ref,
@@ -57,7 +59,7 @@ const Column = forwardRef<HTMLDivElement, ColumnProps>(
       null,
     );
 
-    const changeBeingName = () => {
+    const changeNameColumn = () => {
       setMadeOfColumn();
       setIsChangeName(true);
     };
@@ -70,6 +72,14 @@ const Column = forwardRef<HTMLDivElement, ColumnProps>(
       saveMadeOfColumn(name);
       setIsChangeName(false);
     };
+
+    const ButtonArrow = isMobile && !!value.tasks.length && (
+      <Arrow
+        isShow={isShowTasks}
+        onClick={() => setIsShowTasks((prev) => !prev)}
+        className="arrow"
+      />
+    );
     return (
       <ColumnWrapper ref={ref} {...params}>
         <Header
@@ -77,20 +87,16 @@ const Column = forwardRef<HTMLDivElement, ColumnProps>(
           isChangeName={isChangeName}
           onSubmitForm={onSubmitForm}
           dragHandleProps={dragHandleProps}>
-          <button onClick={openPopup}>
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Points key={index} />
-            ))}
-          </button>
+          <ButtonSetting onClick={openPopup} />
           {positionPopup && (
             <Actions
-              position={positionPopup}
               sortingState={sorting}
               sortColumn={sortColumn}
-              closePopup={() => setPositionPopup(null)}
-              changeNameColumn={changeBeingName}
-              createNewTask={createNewTask}
+              position={positionPopup}
               changeColumn={changeColumn}
+              createNewTask={createNewTask}
+              changeNameColumn={changeNameColumn}
+              closePopup={() => setPositionPopup(null)}
             />
           )}
         </Header>
@@ -100,28 +106,18 @@ const Column = forwardRef<HTMLDivElement, ColumnProps>(
           type={DropName.subItem}>
           {(provided) => (
             <Content {...provided.droppableProps} ref={provided.innerRef}>
-              {isMobile && !!value.tasks.length && (
-                <Arrow
-                  isShow={isShowTasks}
-                  onClick={() => setIsShowTasks((prev) => !prev)}
-                  className="arrow"
-                />
-              )}
+              {ButtonArrow}
               {isShowTasks &&
                 value.tasks.map((task, index) => (
                   <Card
-                    key={task.id}
                     {...task}
-                    openTask={() => openTask(task)}
+                    key={task.id}
                     index={index}
+                    changeOldTask={() => changeOldTask(task)}
                   />
                 ))}
               <NewTask onClick={createNewTask}>
-                <img
-                  className="image"
-                  src="/static/images/new-task.png"
-                  alt="new task"
-                />
+                <img {...IMAGE_NEW_TASK} />
               </NewTask>
               {provided.placeholder}
             </Content>

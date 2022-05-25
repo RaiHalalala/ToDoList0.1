@@ -3,7 +3,7 @@ import { Board } from 'types/board';
 import { INITIAL_NEW_CARD } from 'constants/board';
 import { maxNumber, deepEqual } from 'utils/helper';
 //Components
-import OpenCard from './OpenCard';
+import Popup from './Popup';
 import Card from './Card';
 import Nav from './Nav';
 import { Block } from './styled';
@@ -16,6 +16,11 @@ interface BoardsProps {
   sendDeletedBoard: (boardID: number) => void;
 }
 
+type PopupType = {
+  createdNewBoard: boolean;
+  changedOldBoard: Board | null;
+};
+
 const Boards: FC<BoardsProps> = ({
   boards,
   setFavorite,
@@ -24,21 +29,23 @@ const Boards: FC<BoardsProps> = ({
   sendDeletedBoard,
 }: BoardsProps) => {
   const [data, setData] = useState(boards);
-  const [isNewCard, setNewCard] = useState(false);
-  const [openBoard, setOpenBoard] = useState<Board | null>(null);
+  const [openPopup, setOpenPopup] = useState<PopupType>({
+    createdNewBoard: false,
+    changedOldBoard: null,
+  });
 
-  const setBoard = (values: Board, isNewTask?: boolean) => {
-    if (isNewTask) {
-      saveNewBoard(values);
-      setData((prev) => [...prev, values]);
-      setNewCard(false);
-      return;
-    }
+  const createNewBoard = (values: Board) => {
+    saveNewBoard(values);
+    setData((prev) => [...prev, values]);
+    setOpenPopup((prev) => ({ ...prev, createdNewBoard: false }));
+  };
+
+  const changeOldBoard = (values: Board) => {
     saveChanges(values);
     setData((prev) =>
       prev.map((board) => (board.id === values.id ? values : board)),
     );
-    setOpenBoard(null);
+    setOpenPopup((prev) => ({ ...prev, changedOldBoard: null }));
   };
 
   const deleteBoard = (boardID: number) => {
@@ -46,41 +53,56 @@ const Boards: FC<BoardsProps> = ({
     sendDeletedBoard(boardID);
   };
 
+  const addNewBoard = () =>
+    setOpenPopup((prev) => ({ ...prev, createdNewBoard: true }));
+
+  const selectBoard = (changedOldBoard: Board) =>
+    setOpenPopup((prev) => ({ ...prev, changedOldBoard }));
+
+  //popup with functional of creating the new board
+  const CratedNewBoard = openPopup.createdNewBoard && (
+    <Popup
+      isNewCard
+      id={maxNumber(data.map(({ id }) => id))}
+      setBoard={createNewBoard}
+      initialData={INITIAL_NEW_CARD}
+      setDisabled={(newData: Board) => !newData.name}
+      onClose={() =>
+        setOpenPopup((prev) => ({ ...prev, createdNewBoard: false }))
+      }
+    />
+  );
+  //popup with functional of changing the board
+  const ChangedOldBoard = openPopup.changedOldBoard && (
+    <Popup
+      id={openPopup.changedOldBoard.id}
+      setBoard={changeOldBoard}
+      initialData={openPopup.changedOldBoard}
+      deleteBoard={deleteBoard}
+      setDisabled={(newData: Board, prevData?: Board) =>
+        deepEqual(prevData, newData)
+      }
+      onClose={() =>
+        setOpenPopup((prev) => ({ ...prev, changedOldBoard: null }))
+      }
+    />
+  );
+
   return (
     <>
-      <Nav addNewCard={() => setNewCard((prev) => (!prev ? true : prev))} />
+      <Nav addNewBoard={addNewBoard} />
       <Block className="scroll">
         {data.map((params) => (
           <Card
-            key={params.id}
-            setFavorite={setFavorite}
-            selectCard={() => setOpenBoard(params)}
             {...params}
+            key={params.id}
+            setFavoriteBoard={setFavorite}
+            selectBoard={() => selectBoard(params)}
           />
         ))}
       </Block>
-      {isNewCard && (
-        <OpenCard
-          isNewCard
-          id={maxNumber(data.map(({ id }) => id))}
-          setBoard={(value: Board) => setBoard(value, true)}
-          initialData={INITIAL_NEW_CARD}
-          setDisabled={(newData: Board) => !newData.name}
-          onClose={() => setNewCard(false)}
-        />
-      )}
-      {openBoard && (
-        <OpenCard
-          id={openBoard.id}
-          setBoard={setBoard}
-          initialData={openBoard}
-          setDisabled={(newData: Board, prevData?: Board) =>
-            deepEqual(prevData, newData)
-          }
-          deleteBoard={deleteBoard}
-          onClose={() => setOpenBoard(null)}
-        />
-      )}
+      {CratedNewBoard}
+      {ChangedOldBoard}
     </>
   );
 };

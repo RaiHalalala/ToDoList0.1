@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { IMAGE_CLOSE } from 'constants/common';
 import styled from '@emotion/styled';
 
 const Button = styled.button`
@@ -17,12 +18,10 @@ interface CloseProps {
   className?: string;
 }
 
-const Close: FC<CloseProps> = ({ onClick, className }: CloseProps) => {
-  return (
-    <Button onClick={onClick} className={className}>
-      <img src="/static/images/close.png" alt="close" className="icon" />
-    </Button>
-  );
-};
+const Close: FC<CloseProps> = ({ onClick, className }: CloseProps) => (
+  <Button onClick={onClick} className={className}>
+    <img {...IMAGE_CLOSE} />
+  </Button>
+);
 
 export default Close;

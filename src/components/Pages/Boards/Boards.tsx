@@ -18,6 +18,7 @@ const Boards = () => {
     ({ boards }) => boards,
   );
   useEffect(() => {
+    //getting data of boards when we stay in main page ('/')
     dispatch(getUser());
   }, []);
   const setFavorite = (id: number, is_favorite: boolean) =>
@@ -28,6 +29,8 @@ const Boards = () => {
 
   const saveNewBoard = (values: Board) => dispatch(addNewBoard(values));
 
+  const sendDeletedBoard = (boardID: number) => dispatch(deleteBoard(boardID));
+
   if (loading) {
     return <Loading />;
   }
@@ -37,7 +40,7 @@ const Boards = () => {
       setFavorite={setFavorite}
       saveChanges={saveChanges}
       saveNewBoard={saveNewBoard}
-      sendDeletedBoard={(boardID: number) => dispatch(deleteBoard(boardID))}
+      sendDeletedBoard={sendDeletedBoard}
     />
   );
 };

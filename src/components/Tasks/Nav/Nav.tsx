@@ -1,5 +1,7 @@
 import { FC, useState } from 'react';
 import { Filter as FilterType } from '../type';
+import { IMAGE_ARROW_LIGHT } from 'constants/common';
+import { BUTTON_PREV } from 'constants/tests';
 //Components
 import Button, { ThemeButton } from 'ui-kit/Button';
 import Filter from 'ui-kit/Filter';
@@ -7,26 +9,22 @@ import Arrow from 'ui-kit/Arrow';
 import { NavTab } from './styled';
 
 interface NavProps {
-  addNewColumn: () => void;
   filtering: FilterType;
+  addNewColumn: () => void;
   changeFiltering: (param: FilterType) => void;
 }
 
 const Nav: FC<NavProps> = ({
-  addNewColumn,
   filtering,
+  addNewColumn,
   changeFiltering,
 }: NavProps) => {
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   return (
     <NavTab>
       <Button className="button" to="/" themeButton={ThemeButton.secondary}>
-        <img
-          className="arrow"
-          src="/static/images/arrow-light.png"
-          alt="arrow"
-        />
-        Prev page
+        <img {...IMAGE_ARROW_LIGHT} />
+        {BUTTON_PREV}
       </Button>
       <Arrow
         isShow={!isOpenFilters}

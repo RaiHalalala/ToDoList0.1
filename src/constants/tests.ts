@@ -8,6 +8,8 @@ export const ATTENTION_CLEAR = 'Are you sure \nYou want to clear this task?';
 export const DEADLINE_TITLE = 'Change deadline';
 export const DATE_FORMAT = 'MMMM dd, yyyy';
 export const CHOOSE_PARAM = 'Filter by tag';
+export const DEFAULT_COLUMN_NAME = 'column name';
+export const BUTTON_PREV = 'Prev page';
 export const INITIAL_NEW_TASK = {
   id: 0,
   order: 0,

@@ -33,7 +33,7 @@ export const ButtonDelete = styled.button`
   background: ${({ theme }) => theme.colors.bgLight};
   border-radius: 50%;
 
-  & > .close {
+  & > .icon {
     display: block;
     width: 100%;
     height: 100%;

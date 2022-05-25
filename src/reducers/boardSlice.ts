@@ -5,7 +5,6 @@ import {
   fetchAddBoard,
   fetchAddGroupeOfTasks,
   fetchDeleteBoard,
-  // fetchDeleteGroupeOfTasks,
 } from 'api';
 import { RootState } from 'store';
 import { Board } from 'types/board';
@@ -83,9 +82,6 @@ export const deleteBoard = createAsyncThunk<void, number, { state: RootState }>(
       await fetchDeleteBoard({
         boardID,
       });
-      // await fetchDeleteGroupeOfTasks({
-      //   params: { boardId: boardID },
-      // });
     } catch (error) {
       dispatch(setError(true));
     }

@@ -4,32 +4,8 @@ import { setFormatDate, setNextDay } from 'utils/helper';
 import DatePicker from 'react-datepicker';
 import MyContainer from './MyContainer';
 import CustomInput from './CustomInput';
-import styled from '@emotion/styled';
+import { Wrapper, DateContainer } from './styled';
 import 'react-datepicker/dist/react-datepicker.css';
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const DateContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  &:not(:first-of-type) {
-    margin-top: 10px;
-  }
-
-  & > .header {
-    margin: 5px 0 10px;
-    width: 50%;
-  }
-
-  @media (${({ theme }) => theme.breakpoints.xs}) {
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-  }
-`;
 
 interface DatepickerProps {
   className?: string;

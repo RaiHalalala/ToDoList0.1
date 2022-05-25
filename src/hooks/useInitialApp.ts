@@ -5,6 +5,7 @@ import { RootState } from 'store';
 import { loadState } from 'utils/localStorage';
 import { KEY_MODE } from 'constants/names';
 
+//performs mode setting from the Local storage (light or dark)
 export const useInitialApp = () => {
   const dispatch = useDispatch();
   const { mode } = useSelector<RootState, AppState>(({ app }) => app);

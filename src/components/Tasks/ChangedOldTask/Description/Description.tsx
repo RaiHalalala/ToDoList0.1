@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { Description as DescriptionType } from 'types/task';
+import { IMAGE_CLOSE } from 'constants/common';
 import { Wrapper, ButtonDelete } from './styled';
 
 interface DescriptionProps {
@@ -15,7 +16,7 @@ const Description: FC<DescriptionProps> = ({
 }: DescriptionProps) => (
   <Wrapper isNewDesc={isNewDesc}>
     <ButtonDelete onClick={deleteDescription}>
-      <img className="close" src="/static/images/close.png" alt="delete" />
+      <img {...IMAGE_CLOSE} />
     </ButtonDelete>
     <p dangerouslySetInnerHTML={{ __html: description.title }} />
   </Wrapper>

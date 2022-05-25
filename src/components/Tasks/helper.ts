@@ -19,18 +19,18 @@ export const onDragEnd = (
 
   if (type === DropName.subItem) {
     if (source.droppableId === destination.droppableId) {
-      //move in the save column
+      //move to the same column
       const newColumns = onDropColumn(columns, source, destination);
       saveData.dropTask(newColumns);
       return setColumns(newColumns);
     }
-    // move in the another column
+    // move to the another column
     const newColumns = onDropAnotherColumn(columns, source, destination);
     saveData.dropTask(newColumns);
     return setColumns(newColumns);
   }
   if (type === DropName.item) {
-    //перетаскивает колонку
+    //move the column
     const newColumns = moveColumn(columns, source, destination);
     saveData.dropColumn(newColumns);
     return setColumns(newColumns);
@@ -42,6 +42,7 @@ const onDropColumn = (
   source: DraggableLocation,
   destination: DraggableLocation,
 ) => {
+  //move to the same column
   const items = columns[source.droppableId];
   const copiedItems = { ...items };
   const [removed] = copiedItems.tasks.splice(source.index, 1);
@@ -58,6 +59,7 @@ const onDropAnotherColumn = (
   source: DraggableLocation,
   destination: DraggableLocation,
 ) => {
+  // move to the another column
   const id = {
     sourceKey: source.droppableId,
     destKey: destination.droppableId,
@@ -83,6 +85,7 @@ const moveColumn = (
   source: DraggableLocation,
   destination: DraggableLocation,
 ) => {
+  //move the column
   const wrapper = Object.values(columns);
   const copiedWrapper = [...wrapper];
   const [removed] = copiedWrapper.splice(source.index, 1);
@@ -97,12 +100,12 @@ const toFormDataOnDrop = (columns: Columns, id: ID) => {
   const destColumn = columns[id.destKey];
   const sourceItems = { ...sourceColumn };
   const [removed] = sourceItems.tasks.splice(id.sourceIndex, 1);
-  //change category_id of task
+  //change category_id of task at moving to the another column
   const movedCart: Task = { ...removed, category_id: destColumn.categories_id };
   return { destColumn, removed: movedCart, sourceItems };
 };
 
-export const changeName = (
+export const changeColumnName = (
   value: Columns,
   newColumnID: number | null,
   newName: string,
@@ -132,39 +135,37 @@ export const deleteColumn = (value: Columns, category_id: number) => {
   return Object.fromEntries(newColumns);
 };
 
+//when created new task, add the task in column
 export const setTaskOnColumn = (
   columns: Columns,
   values: Task,
   isNewTask?: boolean,
 ) => {
   const mode = { isNewTask, values };
-  const newColumns = Object.entries(columns).map(([id, column]) =>
-    column.categories_id === values.category_id
-      ? [
-          id,
-          {
-            ...column,
-            tasks: chooseMode(column.tasks, mode),
-          },
-        ]
-      : [id, column],
-  );
+  const newColumns = Object.entries(columns).map(([id, column]) => {
+    const tasks = convertTasks(column.tasks, mode);
+    const newColumn = { ...column, tasks };
+    return column.categories_id === values.category_id
+      ? [id, newColumn]
+      : [id, column];
+  });
   return Object.fromEntries(newColumns);
 };
-export const chooseMode = (
+
+//convert tasks depending on isNewTask or not
+export const convertTasks = (
   tasks: Task[],
-  {
-    isNewTask,
-    values,
-  }: {
+  params: {
     isNewTask?: boolean;
     values: Task;
   },
 ) => {
-  if (isNewTask) {
-    return [...tasks, values];
+  if (params.isNewTask) {
+    return [...tasks, params.values];
   }
-  return tasks.map((task) => (task.id === values.id ? values : task));
+  return tasks.map((task) =>
+    task.id === params.values.id ? params.values : task,
+  );
 };
 
 export const setColumnFiltering = (columns: Columns, value: string) => {
@@ -195,6 +196,7 @@ export const setColumnSort = (
   return Object.fromEntries(newColumns);
 };
 
+//sort by params datecreated & name
 const sort = (tasks: Task[], options: SortOptions) => {
   const helper = () => {
     if (options.key === 'datecreated') {
@@ -219,4 +221,9 @@ const sortByName = (a: Task, b: Task) => {
   const start = new Date(b.datecreated).getTime();
   const end = new Date(a.datecreated).getTime();
   return end - start;
+};
+
+export const addNewTags = (newTags: string[], oldTags: string[]) => {
+  const data = newTags.filter((tag) => !oldTags.includes(tag));
+  return [...data, ...oldTags];
 };

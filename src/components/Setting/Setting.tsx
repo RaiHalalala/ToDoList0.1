@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMode, AppState } from 'reducers/appSlice';
 import { RootState } from 'store';
 //Components
-import Switch from 'ui-kit/switch';
-import Time from 'ui-kit/time';
+import Switch from 'ui-kit/Switch';
+import Time from 'ui-kit/Time';
 import { Wrapper, Name, Block, Title } from './styled';
 
 interface SettingProps {

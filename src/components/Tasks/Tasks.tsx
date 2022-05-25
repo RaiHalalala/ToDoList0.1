@@ -14,24 +14,25 @@ import {
 } from './type';
 import {
   setColumnFiltering,
+  changeColumnName,
   setTaskOnColumn,
   setColumnSort,
   deleteColumn,
   clearColumn,
-  changeName,
+  addNewTags,
   onDragEnd,
 } from './helper';
 import {
+  DEFAULT_COLUMN_NAME,
   ATTENTION_DELETE,
   ATTENTION_CLEAR,
   PURE_CONTENT,
 } from 'constants/tests';
 //Components
-import WrapperModal from 'ui-kit/WrapperModal';
 import Attention from 'ui-kit/Attention';
-import OpenedCard from './OpenedCard';
+import ChangedOldTask from './ChangedOldTask';
 import Content from './Content';
-import NewCard from './NewCard';
+import CreatedNewTask from './CreatedNewTask';
 import Nav from './Nav';
 import { Wrapper, Advertising } from './styled';
 
@@ -40,46 +41,55 @@ interface TasksProps {
   tags: string[];
   newIDForTask: number;
   newIDForColumn: number;
-  sendCategories: (categories: Category[]) => void;
   sendTasks: (data: Task[]) => void;
   sendTags: (tags: string[]) => void;
+  sendCategories: (categories: Category[]) => void;
 }
+
+type PopupType = {
+  createdNewTask: InitialValues | null;
+  changedOldTask: Task | null;
+};
 
 const Tasks: FC<TasksProps> = ({
   data,
   tags,
   newIDForTask,
   newIDForColumn,
-  sendCategories,
   sendTasks,
   sendTags,
+  sendCategories,
 }: TasksProps) => {
   const [columns, setColumns] = useState<Columns>(data);
+  const [attention, setAttention] = useState<AttentionType | null>(null);
+  const [sorting, setSorting] = useState<SortOptions | null>(null);
+  const [filtering, setFiltering] = useState<Filter>(initialFilter);
+  const [openPopup, setOpenPopup] = useState<PopupType>({
+    createdNewTask: null,
+    changedOldTask: null,
+  });
   const [newID, setNewID] = useState<NewID>({
     column: newIDForColumn,
     task: newIDForTask,
   });
-  const [openTask, setOpenTask] = useState<Task | null>(null);
-  const [newTask, setNewTask] = useState<InitialValues | null>(null);
-  const [attention, setAttention] = useState<AttentionType | null>(null);
-  const [filtering, setFiltering] = useState<Filter>(initialFilter);
-  const [sorting, setSorting] = useState<SortOptions | null>(null);
 
   const addNewColumn = () => {
     const newValue = {
-      name: 'New Column',
+      name: DEFAULT_COLUMN_NAME,
       categories_id: newID.column,
       tasks: [],
     };
     setColumns((prev) => ({ ...prev, [newID.column]: newValue }));
   };
 
+  //set the attention before clear or delete the column
   const setAttentionData = (value: ChangingColumn, category_id: number) => {
-    if (value === ChangingColumn.clear) {
-      return setAttention({ base: value, category_id, title: ATTENTION_CLEAR });
-    }
-    return setAttention({ base: value, category_id, title: ATTENTION_DELETE });
+    const title =
+      value === ChangingColumn.clear ? ATTENTION_CLEAR : ATTENTION_DELETE;
+    setAttention({ base: value, category_id, title });
   };
+
+  //clear or delete the column and send result on the back
   const changeColumn = () => {
     if (!attention) return;
     const newColumns =
@@ -89,24 +99,28 @@ const Tasks: FC<TasksProps> = ({
 
     setColumns(newColumns);
 
+    //delete tasks of column
     formDataByTasks(newColumns);
     if (attention.base === ChangingColumn.delete) {
+      //delete t column
       formDataByCategories(newColumns);
     }
     setAttention(null);
   };
 
   const saveMadeOfColumn = (name: string) => {
-    setColumns((prev) => changeName(prev, newID.column, name));
+    //change name of column
+    setColumns((prev) => changeColumnName(prev, newID.column, name));
     setNewID((prev) => ({ ...prev, column: prev.column + 1 }));
     formDataByColumn(name);
   };
   const setMadeOfColumn = (id: number) => {
+    //create a new ID for column
     setNewID((prev) => ({ ...prev, column: id }));
   };
 
   const formDataByColumn = (name: string) => {
-    const newColumns = changeName(columns, newID.column, name);
+    const newColumns = changeColumnName(columns, newID.column, name);
     formDataByCategories(newColumns);
   };
   const formDataByCategories = (value: Columns) => {
@@ -125,6 +139,8 @@ const Tasks: FC<TasksProps> = ({
       .flat();
     sendTasks(data);
   };
+
+  //changing or creating the task
   const setTask = (values: Task, isNewTask?: boolean) => {
     const newColumns = setTaskOnColumn(columns, values, isNewTask);
     const newTags = addNewTags(values.tags, tags);
@@ -132,13 +148,7 @@ const Tasks: FC<TasksProps> = ({
     setColumns(newColumns);
     formDataByTasks(newColumns);
     setNewID((prev) => ({ ...prev, task: prev.task + 1 }));
-    newTask && setNewTask(null);
-    openTask && setOpenTask(null);
-  };
-
-  const addNewTags = (newTags: string[], oldTags: string[]) => {
-    const data = newTags.filter((tag) => !oldTags.includes(tag));
-    return [...data, ...oldTags];
+    setOpenPopup({ createdNewTask: null, changedOldTask: null });
   };
 
   const changeFiltering = (param: Filter) => {
@@ -150,48 +160,57 @@ const Tasks: FC<TasksProps> = ({
     setColumns(newColumns);
   };
 
+  //sorting tasks in column for datecreated and ABC
   const sortColumn = (options: SortOptions, categories_id: number) => {
     const newColumns = setColumnSort(columns, options, categories_id);
     setSorting(options);
     setColumns(newColumns);
   };
 
+  const AttentionComponent = attention && (
+    <Attention onAgree={changeColumn} onDisagree={() => setAttention(null)}>
+      {attention.title}
+    </Attention>
+  );
+
+  //popup with functional of changing the task
+  const ChangedOldTaskComponent = openPopup.changedOldTask && (
+    <ChangedOldTask
+      task={openPopup.changedOldTask}
+      tags={tags}
+      setTask={setTask}
+      onClose={() =>
+        setOpenPopup((prev) => ({ ...prev, changedOldTask: null }))
+      }
+    />
+  );
+
+  //popup with functional of creating the new task
+  const CreatedNewTaskComponent = openPopup.createdNewTask && (
+    <CreatedNewTask
+      tags={tags}
+      dataOfNewTask={openPopup.createdNewTask}
+      setTask={setTask}
+      categoryName={openPopup.createdNewTask.name}
+      onClose={() => () =>
+        setOpenPopup((prev) => ({ ...prev, createdNewTask: null }))}
+    />
+  );
+
+  const PureComponent = !Object.values(columns).length && (
+    <Advertising>{PURE_CONTENT}</Advertising>
+  );
+
   return (
     <Wrapper>
       <Nav
-        addNewColumn={addNewColumn}
         filtering={filtering}
+        addNewColumn={addNewColumn}
         changeFiltering={changeFiltering}
       />
-      {!Object.values(columns).length && (
-        <Advertising>{PURE_CONTENT}</Advertising>
-      )}
-      {openTask && (
-        <WrapperModal onClose={() => setOpenTask(null)}>
-          <OpenedCard task={openTask} tags={tags} setTask={setTask} />
-        </WrapperModal>
-      )}
-      {newTask && (
-        <WrapperModal onClose={() => setNewTask(null)}>
-          <NewCard
-            tags={tags}
-            dataOfNewTask={newTask}
-            setTask={setTask}
-            categoryName={
-              Object.values(columns).find(
-                ({ categories_id }) => categories_id === newTask?.category_id,
-              )?.name
-            }
-          />
-        </WrapperModal>
-      )}
-      {attention && (
-        <Attention onAgree={changeColumn} onDisagree={() => setAttention(null)}>
-          {attention.title}
-        </Attention>
-      )}
       <Content
         onDragEnd={(result) => {
+          //zeroing sorting before dragging
           if (result.type === DropName.subItem) {
             setSorting(null);
           }
@@ -205,11 +224,22 @@ const Tasks: FC<TasksProps> = ({
         setMadeOfColumn={setMadeOfColumn}
         saveMadeOfColumn={saveMadeOfColumn}
         newColumnID={newID.column}
-        openTask={(task: Task) => setOpenTask(task)}
-        createNewTask={(values) => setNewTask({ ...values, id: newID.task })}
+        changeOldTask={(task: Task) =>
+          setOpenPopup((prev) => ({ ...prev, changedOldTask: task }))
+        }
+        createNewTask={(values) =>
+          setOpenPopup((prev) => ({
+            ...prev,
+            createdNewTask: { ...values, id: newID.task },
+          }))
+        }
         changeColumn={setAttentionData}
         columns={columns}
       />
+      {ChangedOldTaskComponent}
+      {CreatedNewTaskComponent}
+      {AttentionComponent}
+      {PureComponent}
     </Wrapper>
   );
 };

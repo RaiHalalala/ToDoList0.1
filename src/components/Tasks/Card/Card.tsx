@@ -1,23 +1,23 @@
 import { FC } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { Task as TaskProps } from 'types/task';
 import { DropName } from '../type';
+import { Task as TaskProps } from 'types/task';
 import { Wrapper, Name, Deadline } from './styled';
 
 interface CardProps extends TaskProps {
-  openTask: () => void;
   index: number;
+  changeOldTask: () => void;
 }
 
 const Card: FC<CardProps> = ({
-  openTask,
   id,
   name,
-  deadline,
-  datecreated,
   icon,
   index,
   isActive,
+  deadline,
+  datecreated,
+  changeOldTask,
 }: CardProps) => (
   <Draggable draggableId={`${DropName.subItem}-${id}`} index={index}>
     {(provided) => (
@@ -26,7 +26,7 @@ const Card: FC<CardProps> = ({
         {...provided.draggableProps}
         {...provided.dragHandleProps}
         isActive={isActive}
-        onClick={openTask}>
+        onClick={changeOldTask}>
         <Name>{name}</Name>
         <Deadline>Created: {datecreated}</Deadline>
         <Deadline>Deadline: {deadline}</Deadline>

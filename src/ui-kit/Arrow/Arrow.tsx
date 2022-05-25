@@ -5,17 +5,17 @@ import { Button, variantsForArrow } from './styled';
 interface ArrowProps {
   isShow?: boolean;
   className?: string;
+  children?: React.ReactNode;
   position?: 'vertical' | 'horizontal';
   onClick: () => void;
-  children?: React.ReactNode;
 }
 
 const Arrow: FC<ArrowProps> = ({
-  isShow = true,
   onClick,
-  position = 'vertical',
-  className,
   children,
+  className,
+  isShow = true,
+  position = 'vertical',
   ...params
 }: ArrowProps) => (
   <Button

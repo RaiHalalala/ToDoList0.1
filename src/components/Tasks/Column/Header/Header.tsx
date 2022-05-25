@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { DraggableProvidedDragHandleProps } from 'react-beautiful-dnd';
+import { DraggableProvidedDragHandleProps as DragHandleType } from 'react-beautiful-dnd';
 import { MAX_LENGTH } from 'constants/tests';
 //Components
 import Input from 'ui-kit/Input';
@@ -9,8 +9,8 @@ interface HeaderProps {
   name: string;
   isChangeName: boolean;
   children: React.ReactNode;
+  dragHandleProps?: DragHandleType;
   onSubmitForm: (name: string) => void;
-  dragHandleProps?: DraggableProvidedDragHandleProps;
 }
 
 const Header: FC<HeaderProps> = ({
@@ -21,22 +21,26 @@ const Header: FC<HeaderProps> = ({
   dragHandleProps,
 }: HeaderProps) => {
   const [value, setValue] = useState('');
+
+  const FormComponent = isChangeName && (
+    <form onSubmit={() => onSubmitForm(value)}>
+      <Input
+        placeholder={name}
+        value={value}
+        autoFocus
+        onChange={(value) => setValue(value)}
+      />
+    </form>
+  );
+  const NameComponent = !isChangeName && (
+    <p className="name">
+      {name.length > MAX_LENGTH ? `${name.slice(0, MAX_LENGTH)}...` : name}
+    </p>
+  );
   return (
     <Wrapper {...dragHandleProps}>
-      {isChangeName ? (
-        <form onSubmit={() => onSubmitForm(value)}>
-          <Input
-            placeholder={name}
-            value={value}
-            autoFocus
-            onChange={(value) => setValue(value)}
-          />
-        </form>
-      ) : (
-        <p className="name">
-          {name.length > MAX_LENGTH ? `${name.slice(0, MAX_LENGTH)}...` : name}
-        </p>
-      )}
+      {FormComponent}
+      {NameComponent}
       {children}
     </Wrapper>
   );

@@ -4,25 +4,25 @@ import { ButtonStyle } from './styled';
 import { ThemeButton } from '.';
 
 interface ButtonProps {
-  as?: ElementType;
-  type?: 'button' | 'submit';
   to?: string;
-  disabled?: boolean;
-  themeButton?: ThemeButton;
+  as?: ElementType;
   className?: string;
-  onClick?: () => void;
+  disabled?: boolean;
   children?: ReactNode;
+  themeButton?: ThemeButton;
+  type?: 'button' | 'submit';
+  onClick?: () => void;
 }
 
 const Button: FC<ButtonProps> = ({
+  to,
+  children,
+  className,
+  themeButton,
   as = 'button',
   type = 'button',
-  to,
   disabled = false,
-  themeButton,
-  className,
   onClick,
-  children,
 }: ButtonProps) => {
   const history = useHistory();
   const onClicked = () => {

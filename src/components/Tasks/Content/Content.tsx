@@ -23,11 +23,11 @@ interface ContentProps {
   columns: Columns;
   newColumnID: number;
   sorting: SortOptions | null;
-  openTask: (task: Task) => void;
-  createNewTask: (values: InitialValues) => void;
+  changeOldTask: (task: Task) => void;
   onDragEnd: (result: DropResult) => void;
-  setMadeOfColumn: (id: number, name: string) => void;
   saveMadeOfColumn: (name: string) => void;
+  createNewTask: (values: InitialValues) => void;
+  setMadeOfColumn: (id: number, name: string) => void;
   sortColumn: (options: SortOptions, categories_id: number) => void;
   changeColumn: (value: ChangingColumn, category_id: number) => void;
 }
@@ -35,16 +35,23 @@ interface ContentProps {
 const Content: FC<ContentProps> = ({
   columns,
   sorting,
-  newColumnID,
-  sortColumn,
-  openTask,
-  createNewTask,
   onDragEnd,
+  sortColumn,
+  newColumnID,
+  changeOldTask,
+  createNewTask,
   setMadeOfColumn,
   saveMadeOfColumn,
   changeColumn,
 }: ContentProps) => {
   const { isMobile } = useScreen();
+  const setCreatedNewTask = (value: Value) => {
+    createNewTask({
+      category_id: value.categories_id,
+      order: value.tasks.length,
+      name: value.name,
+    });
+  };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable
@@ -75,13 +82,8 @@ const Content: FC<ContentProps> = ({
                       changeColumn={(val) =>
                         changeColumn(val, value.categories_id)
                       }
-                      openTask={openTask}
-                      createNewTask={() =>
-                        createNewTask({
-                          category_id: value.categories_id,
-                          order: value.tasks.length,
-                        })
-                      }
+                      changeOldTask={changeOldTask}
+                      createNewTask={() => setCreatedNewTask(value)}
                       setMadeOfColumn={() =>
                         setMadeOfColumn(Number(id), value.name)
                       }

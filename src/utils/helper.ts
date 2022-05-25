@@ -24,7 +24,11 @@ export const setGradient = (
 export const setFormatDate = (date: Date, formatDate?: string) =>
   format(date, formatDate || 'dd MMMM.');
 
+//delete all numbers from string
 export const clearOffNumber = (str: string) => str.replace(/[0-9]/g, '');
+//delete other symbols except numbers from string
+export const clearOffExceptNumbers = (str: string) =>
+  Number(str.replace(/[^0-9]/g, ''));
 
 export const calcProgress = (x: number = 0, y: number = 0) => {
   return x ? 100 - Math.trunc((y * 100) / x) : 0;
@@ -59,4 +63,5 @@ export const maxNumber = (data: number[]) => {
 export const setEscapingString = (value: string) =>
   value.replace(/<\/?[^>]+>/g, '');
 
+//convert string to string with tags
 export const toHtml = (value: string) => value.split('\n').join('<br>');

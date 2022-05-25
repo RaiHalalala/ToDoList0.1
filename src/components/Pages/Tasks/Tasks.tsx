@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { Category, Task as TaskType } from 'types/task';
+import { maxNumber, clearOffExceptNumbers } from 'utils/helper';
 import { RootState } from 'store';
+import { useDispatch, useSelector } from 'react-redux';
 import { getTasks, sendChanges, TasksState } from 'reducers/tasksSlice';
-import { maxNumber } from 'utils/helper';
+//Components
+import Loading from 'components/Loading';
 import TasksContent from 'components/Tasks';
 import { Columns } from 'components/Tasks/type';
-import Loading from 'components/Loading';
-import { Category, Task as TaskType } from 'types/task';
 
 const Tasks = () => {
   const dispatch = useDispatch();
@@ -18,19 +19,35 @@ const Tasks = () => {
   >(({ tasks }) => tasks);
 
   useEffect(() => {
-    const taskID = Number(location.search.replace(/[^0-9]/g, ''));
-    dispatch(getTasks(taskID));
+    //get id tasks from url and send request
+    const boardID = clearOffExceptNumbers(location.search);
+    dispatch(getTasks(boardID));
   }, []);
+
+  //convert data array to data object
   const setData = (): Columns => {
     const columns = categories.reduce((target, { id, name, order }) => {
+      const newTasks = tasks.filter(({ category_id }) => category_id === id);
       const value = {
         name,
         categories_id: id,
-        tasks: tasks.filter(({ category_id }) => category_id === id),
+        tasks: newTasks,
       };
       return { ...target, [order]: value };
     }, {});
     return columns;
+  };
+
+  const sendCategories = (categories: Category[]) => {
+    dispatch(sendChanges({ categories }));
+  };
+
+  const sendTasks = (data: TaskType[]) => {
+    dispatch(sendChanges({ data }));
+  };
+
+  const sendTags = (tags: string[]) => {
+    dispatch(sendChanges({ tags }));
   };
 
   if (loading) {
@@ -38,19 +55,13 @@ const Tasks = () => {
   }
   return (
     <TasksContent
-      data={setData()}
       tags={tags}
+      data={setData()}
+      sendTags={sendTags}
+      sendTasks={sendTasks}
+      sendCategories={sendCategories}
       newIDForTask={maxNumber(tasks.map((task) => task.id))}
       newIDForColumn={maxNumber(categories.map((cat) => cat.id))}
-      sendCategories={(categories: Category[]) => {
-        dispatch(sendChanges({ categories }));
-      }}
-      sendTasks={(data: TaskType[]) => {
-        dispatch(sendChanges({ data }));
-      }}
-      sendTags={(tags: string[]) => {
-        dispatch(sendChanges({ tags }));
-      }}
     />
   );
 };

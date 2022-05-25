@@ -6,6 +6,7 @@ import { useScreen } from 'hooks/useScreen';
 import { InitialValues } from '../type';
 import { Task } from 'types/task';
 //Components
+import WrapperModal from 'ui-kit/WrapperModal';
 import Datepicker from 'ui-kit/Datepicker';
 import TextArea from 'ui-kit/TextArea';
 import Button from 'ui-kit/Button';
@@ -17,6 +18,7 @@ interface NewCardProps {
   tags: string[];
   dataOfNewTask: InitialValues;
   categoryName?: string;
+  onClose: () => void;
   setTask: (values: Task, isNewTask?: boolean) => void;
 }
 
@@ -24,6 +26,7 @@ const NewCard: FC<NewCardProps> = ({
   tags,
   dataOfNewTask,
   categoryName,
+  onClose,
   setTask,
 }: NewCardProps) => {
   const { isMobile } = useScreen();
@@ -92,38 +95,40 @@ const NewCard: FC<NewCardProps> = ({
   );
 
   return (
-    <Form>
-      <LeftContent>
-        <h3>New Task</h3>
-        <p>Category: {categoryName}</p>
-        <Input
-          className="form-item"
-          value={values.name}
-          placeholder="add a name for the task"
-          onChange={addName}
-        />
-        <TextArea
-          className="form-item"
-          value={values.descriptions[0]?.title || ''}
-          placeholder="add a description for the task"
-          onChange={addDescription}
-        />
-        {!isMobile && ButtonSave}
-      </LeftContent>
-      <RightContent>
-        <Datepicker changeTimes={changeTimes} />
-        <div>
-          <h4>Tags</h4>
-          <Search
-            options={tags}
-            tags={values.tags}
-            addTag={addTag}
-            deleteTag={deleteTag}
+    <WrapperModal onClose={onClose}>
+      <Form>
+        <LeftContent>
+          <h3>New Task</h3>
+          <p>Category: {categoryName}</p>
+          <Input
+            className="form-item"
+            value={values.name}
+            placeholder="add a name for the task"
+            onChange={addName}
           />
-        </div>
-        {isMobile && ButtonSave}
-      </RightContent>
-    </Form>
+          <TextArea
+            className="form-item"
+            value={values.descriptions[0]?.title || ''}
+            placeholder="add a description for the task"
+            onChange={addDescription}
+          />
+          {!isMobile && ButtonSave}
+        </LeftContent>
+        <RightContent>
+          <Datepicker changeTimes={changeTimes} />
+          <div>
+            <h4>Tags</h4>
+            <Search
+              options={tags}
+              tags={values.tags}
+              addTag={addTag}
+              deleteTag={deleteTag}
+            />
+          </div>
+          {isMobile && ButtonSave}
+        </RightContent>
+      </Form>
+    </WrapperModal>
   );
 };
 

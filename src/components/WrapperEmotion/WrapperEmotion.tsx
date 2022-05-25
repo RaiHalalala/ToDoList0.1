@@ -9,7 +9,6 @@ declare module '@emotion/react' {
   export interface Theme {
     colors: { [key: string]: string };
     fonts: { [key: string]: string };
-    indents: { [key: string]: string };
     breakpoints: { [key: string]: string };
     shadows: { [key: string]: string };
   }
@@ -29,15 +28,6 @@ const theme = (colors: { [key: string]: string }) => ({
     l: '18px',
     xl: '20px',
     xxl: '22px',
-  },
-  indents: {
-    xxs: '8px',
-    xs: '10px',
-    s: '12px',
-    m: '14px',
-    l: '16px',
-    xl: '18px',
-    xxl: '20px',
   },
   breakpoints: {
     xs: 'max-width: 576px',
@@ -74,11 +64,13 @@ const GlobalStyles = () => {
 interface WrapperEmotionProps {
   children: React.ReactNode;
 }
-
+//component with setting global style and theme
 const WrapperEmotion: FC<WrapperEmotionProps> = ({
   children,
 }: WrapperEmotionProps) => {
   const { mode } = useSelector<RootState, AppState>(({ app }) => app);
+
+  //change colors set with changing mode of app
   const setColors = (mode: Mode) => {
     if (mode === 'light') {
       return colorsLight;

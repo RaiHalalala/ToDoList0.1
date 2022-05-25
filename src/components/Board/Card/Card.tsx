@@ -4,6 +4,7 @@ import { Board as BoardType } from 'types/board';
 import { useScreen } from 'hooks/useScreen';
 //Components
 import Star from 'components/Icons/Star';
+import ButtonIcon from 'ui-kit/ButtonIcon';
 import {
   Block,
   LinkContainer,
@@ -16,8 +17,8 @@ import {
 } from './styled';
 
 interface CardProps extends BoardType {
-  setFavorite: (id: number, is_favorite: boolean) => void;
-  selectCard: () => void;
+  selectBoard: () => void;
+  setFavoriteBoard: (id: number, is_favorite: boolean) => void;
 }
 
 const Card: FC<CardProps> = ({
@@ -27,22 +28,22 @@ const Card: FC<CardProps> = ({
   description,
   datecreated,
   is_favorite,
-  selectCard,
-  setFavorite,
+  selectBoard,
+  setFavoriteBoard,
 }: CardProps) => {
   const { isMobile } = useScreen();
-  const [isHovered, setIsHovered] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(is_favorite);
+  const [isHovered, setHovered] = useState(false);
+  const [isFavorite, setFavorite] = useState(is_favorite);
   const handleFavorite = () => {
-    setIsFavorite((prev) => !prev);
-    setFavorite(id, !isFavorite);
+    setFavorite((prev) => !prev);
+    setFavoriteBoard(id, !isFavorite);
   };
 
   return (
     <Block
       colors={colors}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}>
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}>
       <LinkContainer to={{ pathname: `/${id}`, search: `?id=${id}` }}>
         <Name>{name}</Name>
         <Description dangerouslySetInnerHTML={{ __html: description }} />
@@ -50,9 +51,15 @@ const Card: FC<CardProps> = ({
       </LinkContainer>
 
       <Buttons>
-        <button className="change" onClick={selectCard}>
-          <img src="/static/images/pencil.png" alt="pencil" />
-        </button>
+        <ButtonIcon
+          className="change"
+          onClick={selectBoard}
+          attrIcon={{
+            src: '/static/images/pencil.png',
+            alt: 'pencil',
+            width: 'auto',
+          }}
+        />
         <motion.button
           className="star"
           onClick={handleFavorite}

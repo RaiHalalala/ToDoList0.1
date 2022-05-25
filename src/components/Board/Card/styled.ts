@@ -14,7 +14,7 @@ export const Block = styled.div<BlockProps>`
   min-width: 200px;
   background: ${({ colors }) => setGradient(colors)};
   box-shadow: ${({ colors }) => `0px 0px 20px 0px ${colors[1]}`};
-  border-radius: ${({ theme }) => theme.indents.xs};
+  border-radius: 10px;
 
   @media (${({ theme }) => theme.breakpoints.xs}) {
     margin: 10px 0;
@@ -34,7 +34,7 @@ export const LinkContainer = styled(Link)`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: ${({ theme }) => theme.indents.xs};
+  padding: 10px;
   text-decoration: auto;
 `;
 
@@ -69,6 +69,11 @@ export const Buttons = styled.div`
   align-items: flex-end;
   flex-direction: column;
   padding: 10px 0;
+
+  & > .change {
+    width: 27px;
+    height: 27px;
+  }
 
   & > .star > .icon {
     width: 15px;

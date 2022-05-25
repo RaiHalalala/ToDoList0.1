@@ -52,30 +52,28 @@ const ButtonContainer = styled.div`
 `;
 
 interface AttentionProps {
+  children: React.ReactNode;
   onAgree: () => void;
   onDisagree: () => void;
-  children: React.ReactNode;
 }
 
 const Attention: FC<AttentionProps> = ({
   onAgree,
-  onDisagree,
   children,
-}: AttentionProps) => {
-  return (
-    <Wrapper>
-      <Popup>
-        <Close onClick={onDisagree} className="close" />
-        <Title>{children}</Title>
-        <ButtonContainer>
-          <Button onClick={onAgree}>Agree</Button>
-          <Button onClick={onDisagree} themeButton={ThemeButton.secondary}>
-            Close
-          </Button>
-        </ButtonContainer>
-      </Popup>
-    </Wrapper>
-  );
-};
+  onDisagree,
+}: AttentionProps) => (
+  <Wrapper>
+    <Popup>
+      <Close onClick={onDisagree} className="close" />
+      <Title>{children}</Title>
+      <ButtonContainer>
+        <Button onClick={onAgree}>Agree</Button>
+        <Button onClick={onDisagree} themeButton={ThemeButton.secondary}>
+          Close
+        </Button>
+      </ButtonContainer>
+    </Popup>
+  </Wrapper>
+);
 
 export default Attention;

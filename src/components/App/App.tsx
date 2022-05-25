@@ -4,7 +4,7 @@ import { useInitialApp } from 'hooks/useInitialApp';
 //Components
 import WrapperEmotion from 'components/WrapperEmotion';
 import Layout from 'components/Layout';
-import { Routers } from 'routes';
+import Routers from 'components/Routers';
 
 const App = () => {
   useInitialApp();
