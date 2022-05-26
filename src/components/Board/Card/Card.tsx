@@ -1,6 +1,8 @@
 import { FC, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Board as BoardType } from 'types/board';
+import { MAX_LENGTH } from 'constants/board';
+import { setShortName } from 'utils/helper';
 import { useScreen } from 'hooks/useScreen';
 //Components
 import Star from 'components/Icons/Star';
@@ -44,8 +46,8 @@ const Card: FC<CardProps> = ({
       colors={colors}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}>
-      <LinkContainer to={{ pathname: `/${id}`, search: `?id=${id}` }}>
-        <Name>{name}</Name>
+      <LinkContainer to={{ pathname: `/boards/${id}`, search: `?id=${id}` }}>
+        <Name>{setShortName(name, MAX_LENGTH)}</Name>
         <Description dangerouslySetInnerHTML={{ __html: description }} />
         <Bottom>{datecreated}</Bottom>
       </LinkContainer>

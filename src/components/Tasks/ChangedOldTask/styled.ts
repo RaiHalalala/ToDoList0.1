@@ -13,13 +13,16 @@ export const LeftContent = styled.div`
     margin: auto auto 0;
   }
   @media (${({ theme }) => theme.breakpoints.xs}) {
-    width: none;
+    width: auto;
   }
 `;
 
 export const RightContent = styled.div`
   width: 40%;
   padding: 10px;
+  @media (${({ theme }) => theme.breakpoints.xs}) {
+    width: auto;
+  }
 `;
 
 export const Info = styled.div`

@@ -55,7 +55,7 @@ const Tasks = () => {
   }
   return (
     <TasksContent
-      tags={tags}
+      dataTags={tags}
       data={setData()}
       sendTags={sendTags}
       sendTasks={sendTasks}

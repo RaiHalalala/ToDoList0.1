@@ -24,8 +24,6 @@ export const setGradient = (
 export const setFormatDate = (date: Date, formatDate?: string) =>
   format(date, formatDate || 'dd MMMM.');
 
-//delete all numbers from string
-export const clearOffNumber = (str: string) => str.replace(/[0-9]/g, '');
 //delete other symbols except numbers from string
 export const clearOffExceptNumbers = (str: string) =>
   Number(str.replace(/[^0-9]/g, ''));
@@ -65,3 +63,7 @@ export const setEscapingString = (value: string) =>
 
 //convert string to string with tags
 export const toHtml = (value: string) => value.split('\n').join('<br>');
+
+//if name too long so cut it
+export const setShortName = (value: string, max: number) =>
+  value.length > max ? `${value.slice(0, max)}...` : value;

@@ -45,8 +45,15 @@ export const Name = styled.p`
 `;
 
 export const Description = styled.p`
+  height: 30px;
+  width: 100%;
+  overflow: hidden;
   color: #fff;
   font-size: ${({ theme }) => theme.fonts.xs};
+
+  @media (${({ theme }) => theme.breakpoints.xs}) {
+    height: 15px;
+  }
 `;
 
 export const Bottom = styled.div`
@@ -54,8 +61,6 @@ export const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
   color: #fff;
-  height: 30px;
-  overflow: hidden;
 `;
 
 export const Buttons = styled.div`

@@ -49,7 +49,7 @@ const Content: FC<ContentProps> = ({
     createNewTask({
       category_id: value.categories_id,
       order: value.tasks.length,
-      name: value.name,
+      category_name: value.name,
     });
   };
   return (

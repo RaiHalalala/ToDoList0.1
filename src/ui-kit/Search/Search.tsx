@@ -1,12 +1,9 @@
 import React, { FC, useState } from 'react';
 import Input from 'ui-kit/Input';
-import {
-  Wrapper,
-  BoardTags,
-  BoardCheckTags,
-  Button,
-  ButtonPlus,
-} from './styled';
+import BoardTags from './BoardTags';
+import Submit from './Submit';
+import BoardCheckTags from './BoardCheckTags';
+import { Wrapper, Form } from './styled';
 
 interface SearchProps {
   options: string[];
@@ -22,62 +19,38 @@ const Search: FC<SearchProps> = ({
   deleteTag,
 }: SearchProps) => {
   const [newTag, setNewTag] = useState('');
-  const [isFocus, setIsFocus] = useState(false);
-  const setDisabled = (label: string) => tags.some((el) => el === label);
+  const [isFocus, setFocus] = useState(false);
 
   const onAddTag = (tag: string) => {
-    setIsFocus(false);
+    setFocus(false);
     tag && addTag(tag);
     newTag && setNewTag('');
   };
+  const BoardTagsComponent = isFocus && !!options.length && (
+    <BoardTags options={options} tags={tags} onAddTag={onAddTag} />
+  );
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onAddTag(newTag);
+    setNewTag('');
+    setFocus(false);
+  };
+
   return (
     <Wrapper>
-      <Input
-        placeholder="write a tag"
-        value={newTag}
-        onFocus={() => setIsFocus(true)}
-        onChange={(value) => setNewTag(value)}
-        setIcon={() => (
-          <ButtonPlus
-            className="close-input"
-            src={
-              newTag
-                ? '/static/images/arrow-light.png'
-                : '/static/images/close.png'
-            }
-            alt="delete"
-          />
-        )}
-        onClickIcon={() => onAddTag(newTag)}
-      />
-      {isFocus && (
-        <BoardTags>
-          {options.map((label, index) => (
-            <Button
-              key={index}
-              type="button"
-              onClick={() => onAddTag(label)}
-              disabled={setDisabled(label)}>
-              #{label}
-              {!setDisabled(label) && (
-                <ButtonPlus
-                  src="/static/images/close.png"
-                  alt="plus"
-                  className="plus"
-                />
-              )}
-            </Button>
-          ))}
-        </BoardTags>
-      )}
-      <BoardCheckTags>
-        {tags.map((label, index) => (
-          <Button key={index} type="button" onClick={() => deleteTag(label)}>
-            #{label}
-            <ButtonPlus src="/static/images/close.png" alt="delete" />
-          </Button>
-        ))}
-      </BoardCheckTags>
+      <Form onSubmit={onSubmit}>
+        <Input
+          placeholder="write a tag"
+          value={newTag}
+          onFocus={() => setFocus(true)}
+          onChange={(value) => setNewTag(value)}
+        />
+        <Submit disabled={!newTag} />
+      </Form>
+
+      {BoardTagsComponent}
+      <BoardCheckTags tags={tags} deleteTag={deleteTag} />
     </Wrapper>
   );
 };

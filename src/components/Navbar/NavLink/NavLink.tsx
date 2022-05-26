@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { AppState } from 'reducers/appSlice';
 import { RootState } from 'store';
-import { clearOffNumber } from 'utils/helper';
 import { useScreen } from 'hooks/useScreen';
 import { LinkType } from 'data/links';
 //Components
@@ -27,7 +26,7 @@ const NavLink: FC<NavLinkProps> = ({
 
   return (
     <LinkStyle to={to}>
-      {clearOffNumber(location.pathname) === to ? (
+      {location.pathname.includes(to) ? (
         <motion.div className="active" layoutId="active-link">
           <Radius mode={mode} className="active-decorate top" />
           <Radius mode={mode} className="active-decorate bottom" />

@@ -222,8 +222,3 @@ const sortByName = (a: Task, b: Task) => {
   const end = new Date(a.datecreated).getTime();
   return end - start;
 };
-
-export const addNewTags = (newTags: string[], oldTags: string[]) => {
-  const data = newTags.filter((tag) => !oldTags.includes(tag));
-  return [...data, ...oldTags];
-};

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { setFormatDate, setNextDay, toHtml } from 'utils/helper';
-import { DATE_FORMAT, INITIAL_NEW_TASK } from 'constants/tests';
+import { DATE_FORMAT, INITIAL_NEW_TASK, TITLE_NEW_TASK } from 'constants/tests';
 import { BUTTON_SAVE } from 'constants/common';
 import { useScreen } from 'hooks/useScreen';
 import { InitialValues } from '../type';
@@ -12,9 +12,9 @@ import TextArea from 'ui-kit/TextArea';
 import Button from 'ui-kit/Button';
 import Search from 'ui-kit/Search';
 import Input from 'ui-kit/Input';
-import { LeftContent, Form, RightContent } from './styled';
+import { LeftContent, RightContent } from './styled';
 
-interface NewCardProps {
+interface CreatedNewTaskProps {
   tags: string[];
   dataOfNewTask: InitialValues;
   categoryName?: string;
@@ -22,13 +22,13 @@ interface NewCardProps {
   setTask: (values: Task, isNewTask?: boolean) => void;
 }
 
-const NewCard: FC<NewCardProps> = ({
+const CreatedNewTask: FC<CreatedNewTaskProps> = ({
   tags,
   dataOfNewTask,
   categoryName,
   onClose,
   setTask,
-}: NewCardProps) => {
+}: CreatedNewTaskProps) => {
   const { isMobile } = useScreen();
   const [values, setValues] = useState<Task>({
     ...INITIAL_NEW_TASK,
@@ -96,40 +96,38 @@ const NewCard: FC<NewCardProps> = ({
 
   return (
     <WrapperModal onClose={onClose}>
-      <Form>
-        <LeftContent>
-          <h3>New Task</h3>
-          <p>Category: {categoryName}</p>
-          <Input
-            className="form-item"
-            value={values.name}
-            placeholder="add a name for the task"
-            onChange={addName}
+      <LeftContent>
+        <h3>{TITLE_NEW_TASK}</h3>
+        <p>Category: {categoryName}</p>
+        <Input
+          className="form-item"
+          value={values.name}
+          placeholder="add a name for the task"
+          onChange={addName}
+        />
+        <TextArea
+          className="form-item"
+          value={values.descriptions[0]?.title || ''}
+          placeholder="add a description for the task"
+          onChange={addDescription}
+        />
+        {!isMobile && ButtonSave}
+      </LeftContent>
+      <RightContent>
+        <Datepicker changeTimes={changeTimes} />
+        <div>
+          <h4>Tags</h4>
+          <Search
+            options={tags}
+            tags={values.tags}
+            addTag={addTag}
+            deleteTag={deleteTag}
           />
-          <TextArea
-            className="form-item"
-            value={values.descriptions[0]?.title || ''}
-            placeholder="add a description for the task"
-            onChange={addDescription}
-          />
-          {!isMobile && ButtonSave}
-        </LeftContent>
-        <RightContent>
-          <Datepicker changeTimes={changeTimes} />
-          <div>
-            <h4>Tags</h4>
-            <Search
-              options={tags}
-              tags={values.tags}
-              addTag={addTag}
-              deleteTag={deleteTag}
-            />
-          </div>
-          {isMobile && ButtonSave}
-        </RightContent>
-      </Form>
+        </div>
+        {isMobile && ButtonSave}
+      </RightContent>
     </WrapperModal>
   );
 };
 
-export default NewCard;
+export default CreatedNewTask;

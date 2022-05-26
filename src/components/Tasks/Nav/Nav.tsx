@@ -22,7 +22,10 @@ const Nav: FC<NavProps> = ({
   const [isOpenFilters, setIsOpenFilters] = useState(false);
   return (
     <NavTab>
-      <Button className="button" to="/" themeButton={ThemeButton.secondary}>
+      <Button
+        className="button"
+        to="/boards"
+        themeButton={ThemeButton.secondary}>
         <img {...IMAGE_ARROW_LIGHT} />
         {BUTTON_PREV}
       </Button>

@@ -20,7 +20,7 @@ export type ID = {
 export type InitialValues = {
   category_id: number;
   order: number;
-  name: string;
+  category_name: string;
   id?: number;
 };
 

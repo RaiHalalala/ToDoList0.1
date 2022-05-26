@@ -63,6 +63,7 @@ export const addNewBoard = createAsyncThunk<void, Board, { state: RootState }>(
       boardId: params.id,
       categories: [],
       data: [],
+      tags: [],
     };
     try {
       await fetchAddBoard({

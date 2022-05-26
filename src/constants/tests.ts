@@ -10,6 +10,8 @@ export const DATE_FORMAT = 'MMMM dd, yyyy';
 export const CHOOSE_PARAM = 'Filter by tag';
 export const DEFAULT_COLUMN_NAME = 'column name';
 export const BUTTON_PREV = 'Prev page';
+export const BUTTON_SAVE_TAG = 'Save';
+export const TITLE_NEW_TASK = 'Creating the new task';
 export const INITIAL_NEW_TASK = {
   id: 0,
   order: 0,

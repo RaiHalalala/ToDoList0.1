@@ -31,18 +31,7 @@
       ],
       "description": "play the game & create something",
       "datecreated": "25.05.2022",
-      "is_favorite": false
-    },
-    {
-      "id": 4,
-      "name": "Hello",
-      "colors": [
-        "#F47373",
-        "#ba68c8"
-      ],
-      "description": "hello",
-      "datecreated": "May 25, 2022",
-      "is_favorite": false
+      "is_favorite": true
     }
   ],
   "tasks": [
@@ -284,20 +273,11 @@
     {
       "id": 323,
       "boardId": 3,
-      "categories": [
-        {
-          "id": 1,
-          "name": "New Column",
-          "order": 1
-        }
+      "categories": [],
+      "tags": [
+        "tag1"
       ],
       "data": []
-    },
-    {
-      "boardId": 4,
-      "categories": [],
-      "data": [],
-      "id": 324
     }
   ]
 }

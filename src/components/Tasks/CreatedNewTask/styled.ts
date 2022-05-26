@@ -1,15 +1,5 @@
 import styled from '@emotion/styled';
 
-export const Form = styled.form`
-  display: flex;
-  width: 100%;
-  border-radius: inherit;
-
-  @media (${({ theme }) => theme.breakpoints.xs}) {
-    flex-direction: column;
-  }
-`;
-
 export const LeftContent = styled.div`
   display: flex;
   flex-direction: column;

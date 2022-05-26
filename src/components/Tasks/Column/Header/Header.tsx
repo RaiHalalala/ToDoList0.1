@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { DraggableProvidedDragHandleProps as DragHandleType } from 'react-beautiful-dnd';
 import { MAX_LENGTH } from 'constants/tests';
+import { setShortName } from 'utils/helper';
 //Components
 import Input from 'ui-kit/Input';
 import { Wrapper } from './styled';
@@ -34,7 +35,8 @@ const Header: FC<HeaderProps> = ({
   );
   const NameComponent = !isChangeName && (
     <p className="name">
-      {name.length > MAX_LENGTH ? `${name.slice(0, MAX_LENGTH)}...` : name}
+      {setShortName(name, MAX_LENGTH)}
+      {/* {name.length > MAX_LENGTH ? `${name.slice(0, MAX_LENGTH)}...` : name} */}
     </p>
   );
   return (
