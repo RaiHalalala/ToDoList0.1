@@ -6,12 +6,13 @@
 *The package ***[json-server](https://github.com/typicode/json-server)*** used instead of back-end*
 
 ### Start the app
- - rename the file ***initial-db.json*** -> ***db.json***
+ - rename the file ***db.dist.json*** -> ***db.json***
+ - rename the file ***.env.dist*** -> ***.env***
  - `npm run start` -- start the app in a develope mode;
  - `json-server --watch db.json` -- start the base data for this app;
 
 ### Totally functional
- - :white_check_mark Test
+ - Test
     - creating columns and tasks;
     - changing data of tasks and columns;
     - dropping tasks and columns;
