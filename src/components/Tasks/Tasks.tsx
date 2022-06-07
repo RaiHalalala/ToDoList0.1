@@ -207,7 +207,6 @@ const Tasks: FC<TasksProps> = ({
   const EmptyComponent = !isFullContent && (
     <Advertising>{PURE_CONTENT}</Advertising>
   );
-  console.log(!Object.values(columns).length);
 
   return (
     <Wrapper>
